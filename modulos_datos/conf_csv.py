@@ -22,8 +22,9 @@ def crear_sesion(app_name="HeartDiseaseStreamSession"):
 
 # LEER EL CSV DE DATOS MEDICOS (apunta directamente a heart.csv, no a la carpeta)
 def leer_csv(spark, BASE_DIR):
-    path_str = str(BASE_DIR / "inputs" / "Sin procesar" / "heart.csv").replace("\\", "/")
-    CSV_PATH = f"file:///{path_str}"
+    # Ruta absoluta del archivo
+    CSV_PATH = str(BASE_DIR / "inputs" / "Sin procesar" / "heart.csv")
+    
     df = spark.read.format("csv") \
         .option("header", "true") \
         .option("inferSchema", "true") \

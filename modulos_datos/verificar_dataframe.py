@@ -36,15 +36,21 @@ def verificar_datos(df):
         sys.exit(1)
 
 if __name__ == "__main__":
-    from pathlib import Path
     import os
+    import sys
+    from pathlib import Path
+    
     # Aseguramos que las rutas funcionen en cualquier entorno
+
     BASE_DIR = Path(__file__).parent.parent
+    sys.path.append(str(BASE_DIR))
     
     # Importamos las herramientas de carga de datos
     from modulos_datos.conf_csv import crear_sesion, leer_csv
+    from config_entorno import configurar_entorno
     
     print("Iniciando pruebas de calidad del dataset...")
+    configurar_entorno(BASE_DIR)
     spark = crear_sesion("DatasetVerification")
     
     try:
@@ -54,3 +60,4 @@ if __name__ == "__main__":
         verificar_datos(df)
     finally:
         spark.stop()
+
