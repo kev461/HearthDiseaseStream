@@ -68,8 +68,12 @@ def calcular_metricas_ml(coleccion, BASE_DIR):
     plt.tight_layout()
 
     ruta_img = BASE_DIR / "api_flask" / "static" / "outputs" / "confusion_matrix.png"
-    ruta_img.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(ruta_img)
-    plt.close()
+    try:
+        ruta_img.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(ruta_img)
+    except Exception as e:
+        print(f"Error de permisos al guardar imagen: {e}")
+    finally:
+        plt.close()
 
     return metrics
