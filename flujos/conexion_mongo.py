@@ -10,15 +10,15 @@ load_dotenv(Path(__file__).parent.parent / ".env")
 load_dotenv()
 
 # OBTENER LAS DIRECCIONES DE LA BASE DE DATOS
-MONGO_URI = os.getenv("MONGO_URI")
-MONGO_DB        = os.getenv("MONGO_DB")
-MONGO_COLECCION = os.getenv("MONGO_COLECCION")
+HEART_MONGO_URI = os.getenv("HEART_MONGO_URI")
+HEART_MONGO_DB        = os.getenv("HEART_MONGO_DB")
+HEART_MONGO_COLECCION = os.getenv("HEART_MONGO_COLECCION")
 
 # FUNCION PARA CONECTARSE
 def conectar_mongo():
     # INICIAR EL CLIENTE
-    cliente    = MongoClient(MONGO_URI)
+    cliente    = MongoClient(HEART_MONGO_URI)
     # ELEGIR LA CARPETA DONDE SE GUARDA TODO
-    coleccion  = cliente[MONGO_DB][MONGO_COLECCION]
+    coleccion  = cliente[HEART_MONGO_DB][HEART_MONGO_COLECCION]
     # DEVOLVER LA CONEXION LISTA
     return cliente, coleccion

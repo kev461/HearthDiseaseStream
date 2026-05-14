@@ -1,3 +1,4 @@
+name: heart-disease-stream
 services:
 
   # ── Servicio 0: Preparación ──────────────────────────────────────────────────
@@ -112,7 +113,7 @@ services:
       - http
       - api-web:5000
     environment:
-      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+      - NGROK_AUTHTOKEN=${HEART_NGROK_TOKEN}
     depends_on:
       - api-web
     restart: unless-stopped

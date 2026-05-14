@@ -7,9 +7,10 @@ from pymongo import MongoClient
 ruta_env = Path(__file__).parent.parent / ".env"
 load_dotenv(ruta_env)
 
-mongo_uri = os.getenv("MONGO_URI")
-mongo_db = os.getenv("MONGO_DB")
-mongo_col = os.getenv("MONGO_COLECCION")
+# CONFIGURACION DE LA BASE DE DATOS
+mongo_uri = os.getenv("HEART_MONGO_URI")
+mongo_db = os.getenv("HEART_MONGO_DB")
+mongo_col = os.getenv("HEART_MONGO_COLECCION")
 
 print(f"--- Probando conexión a {mongo_db} ---")
 

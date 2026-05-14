@@ -2,17 +2,17 @@ pipeline {
     agent any
 
     environment {
-        // Credenciales seguras inyectadas desde Jenkins
-        MONGO_URI = credentials('MONGO_URI')
-        MONGO_DB = credentials('MONGO_DB')
-        MONGO_COLECCION = credentials('MONGO_COLECCION')
-        NGROK_AUTHTOKEN = credentials('NGROK_AUTHTOKEN')
+        // Credenciales seguras inyectadas desde Jenkins con prefijos únicos
+        HEART_MONGO_URI = credentials('HEART_MONGO_URI')
+        HEART_MONGO_DB = credentials('HEART_MONGO_DB')
+        HEART_MONGO_COLECCION = credentials('HEART_MONGO_COLECCION')
+        HEART_NGROK_TOKEN = credentials('HEART_NGROK_TOKEN')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/kev461/Sentiment-Stream.git'
+                git branch: 'main', url: 'https://github.com/kev461/HearthDiseaseStream.git'
             }
         }
 
@@ -23,20 +23,20 @@ pipeline {
                     bat 'if not exist outputs\\logs mkdir outputs\\logs'
                     
                     // Limpiamos posibles espacios o saltos de línea de las credenciales de Jenkins
-                    def mongoUri = env.MONGO_URI.trim()
-                    def mongoDb = env.MONGO_DB.trim()
-                    def mongoColl = env.MONGO_COLECCION.trim()
-                    def ngrokToken = env.NGROK_AUTHTOKEN.trim()
+                    def mongoUri = env.HEART_MONGO_URI.trim()
+                    def mongoDb = env.HEART_MONGO_DB.trim()
+                    def mongoColl = env.HEART_MONGO_COLECCION.trim()
+                    def ngrokToken = env.HEART_NGROK_TOKEN.trim()
                     
                     // Usamos writeFile para evitar problemas con caracteres especiales
                     def envContent = """
-MONGO_URI=${mongoUri}
-MONGO_DB=${mongoDb}
-MONGO_COLECCION=${mongoColl}
-NGROK_AUTHTOKEN=${ngrokToken}
+HEART_MONGO_URI=${mongoUri}
+HEART_MONGO_DB=${mongoDb}
+HEART_MONGO_COLECCION=${mongoColl}
+HEART_NGROK_TOKEN=${ngrokToken}
 """.trim()
                     writeFile file: '.env', text: envContent
-                    echo "Archivo .env creado y limpiado exitosamente."
+                    echo "Archivo .env creado con prefijos HEART_ exitosamente."
                 }
             }
         }
@@ -64,9 +64,9 @@ NGROK_AUTHTOKEN=${ngrokToken}
                 bat '''
                 if not exist outputs\\logs mkdir outputs\\logs
                 docker run --rm ^
-                -e MONGO_URI="%MONGO_URI%" ^
-                -e MONGO_DB="%MONGO_DB%" ^
-                -e MONGO_COLECCION="%MONGO_COLECCION%" ^
+                -e HEART_MONGO_URI="%HEART_MONGO_URI%" ^
+                -e HEART_MONGO_DB="%HEART_MONGO_DB%" ^
+                -e HEART_MONGO_COLECCION="%HEART_MONGO_COLECCION%" ^
                 heart-disease-app ^
                 python /app/flujos/test_mongo.py ^
                 > outputs\\logs\\heart_mongo_test.log 2>&1
@@ -78,8 +78,8 @@ NGROK_AUTHTOKEN=${ngrokToken}
             steps {
                 bat '''
                 if not exist outputs\\logs mkdir outputs\\logs
-                docker-compose down
-                docker-compose up -d --build > outputs\\logs\\docker_compose_up.log 2>&1
+                docker-compose down --remove-orphans
+                docker-compose up -d --build --force-recreate > outputs\\logs\\docker_compose_up.log 2>&1
                 '''
             }
         }
