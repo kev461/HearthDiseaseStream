@@ -10,12 +10,17 @@ def verificar_datos(df):
         # REVISAR QUE NO ESTE VACIO
         assert df.count() > 0, "No hay datos para procesar"
 
-        # VERIFICAR QUE EXISTAN LAS COLUMNAS ESPERADAS
-        assert "texto"    in df.columns, "Falta la columna 'texto'"
-        assert "etiqueta" in df.columns, "Falta la columna 'etiqueta'"
+        # VERIFICAR QUE EXISTAN TODAS LAS COLUMNAS REQUERIDAS POR EL MODELO
+        columnas_requeridas = [
+            "Age", "Sex", "ChestPainType", "RestingBP", "Cholesterol", 
+            "FastingBS", "RestingECG", "MaxHR", "ExerciseAngina", 
+            "Oldpeak", "ST_Slope", "HeartDisease"
+        ]
+        for col in columnas_requeridas:
+            assert col in df.columns, f"Falta la columna requerida: {col}"
 
-        # REVISAR QUE NO FALTEN DATOS EN LAS FILAS
-        for col in df.columns:
+        # REVISAR QUE NO FALTEN DATOS
+        for col in columnas_requeridas:
             nulos = df.filter(df[col].isNull()).count()
             assert nulos == 0, f"Faltan datos en la columna {col}"
 
