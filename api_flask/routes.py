@@ -141,21 +141,29 @@ def registrar_rutas(app):
     # 3. /stats (GET HTML o JSON para métricas)
     @app.route('/stats')
     def stats():
-        # Retorna JSON para Power BI o front-end
-        total = coleccion.count_documents({})
-        con_riesgo = coleccion.count_documents({"prediccion": "riesgo"})
-        sin_riesgo = coleccion.count_documents({"prediccion": "sin riesgo"})
-        
-        # Calcular métricas avanzadas de ML
-        metricas_ia = calcular_metricas_ml(coleccion, BASE_DIR)
-        
-        return jsonify({
-            "total_pacientes": total,
-            "con_riesgo": con_riesgo,
-            "sin_riesgo": sin_riesgo,
-            "porcentaje_riesgo": round((con_riesgo / total * 100) if total > 0 else 0, 2),
-            "ml_metrics": metricas_ia
-        })
+        try:
+            # Retorna JSON para Power BI o front-end
+            total = coleccion.count_documents({})
+            con_riesgo = coleccion.count_documents({"prediccion": "riesgo"})
+            sin_riesgo = coleccion.count_documents({"prediccion": "sin riesgo"})
+            
+            # Calcular métricas avanzadas de ML
+            metricas_ia = calcular_metricas_ml(coleccion, BASE_DIR)
+            
+            return jsonify({
+                "total_pacientes": total,
+                "con_riesgo": con_riesgo,
+                "sin_riesgo": sin_riesgo,
+                "porcentaje_riesgo": round((con_riesgo / total * 100) if total > 0 else 0, 2),
+                "ml_metrics": metricas_ia
+            })
+        except Exception as e:
+            # Si algo falla, devolvemos un 200 con el error para no romper el Smoke Test si es temporal
+            # O un 500 pero con información útil. Usaremos 500 para que el Smoke Test sepa que falló.
+            return jsonify({
+                "error": "Error al calcular estadísticas",
+                "detalles": str(e)
+            }), 500
 
     # 4. /risk-summary (GET resúmenes agrupados para BI)
     @app.route('/risk-summary')
