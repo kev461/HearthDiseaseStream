@@ -1,0 +1,33 @@
+# Credenciales
+.env
+
+# Hadoop binarios Windows
+hadoop/
+apiflask/hadoop
+
+# Modelo entrenado y checkpoint (se regeneran)
+outputs/checkpoint
+outputs/modelo_heart
+outputs/confusion_matrix.png
+
+# Lotes generados (se regeneran)
+inputs/lotes/
+inputs/stream/
+inputs/test_data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Editor y Logs
+.idea/
+.vscode/
+*.log
